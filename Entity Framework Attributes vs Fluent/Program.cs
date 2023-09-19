@@ -150,7 +150,14 @@ class MainClass
 
         db.Playlists.Add(thePlaylist);
         db.Videos.Add(goodVid);
-        db.SaveChanges();
+        try 
+        {
+            db.SaveChanges();
+        }
+        catch
+        {
+
+        }
 
 
 
