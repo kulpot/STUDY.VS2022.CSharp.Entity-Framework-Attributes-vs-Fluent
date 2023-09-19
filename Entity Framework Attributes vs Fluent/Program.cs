@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 
@@ -154,9 +155,11 @@ class MainClass
         {
             db.SaveChanges();
         }
-        catch
+        catch(DbEntityValidationException error)
         {
-
+            foreach(DbEntityValidationResult validationResult in error.EntityValidationErrors)
+                foreach(DbValidationError eRRoRtTwo in validationResult.ValidationErrors)
+                    Console.WriteLine(eRRoRtTwo.ErrorMessage);  //OUTPUT: The MyList field is required.
         }
 
 
