@@ -81,7 +81,7 @@ class Video
     public int ID { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
-    [Required]
+    //[Required]        // annotation remove - no longer required because of "modelBuilder.Entity<Video>().HasRequired(v => v.MyList);"
     public PlayList MyList { get; set; }
     
     
@@ -101,6 +101,12 @@ class MeContext : DbContext     // PipeLine --SQLServer and VS-- Schema
     }
     public DbSet<Video> Videos { get; set; }
     public DbSet<PlayList> Playlists { get; set; }
+
+    protected override void OnModelCreating(DbModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Video>().HasRequired(v => v.MyList);    // .HasRequired -- makes db.Videos -> Design(rightclick in SQLServer) -> MyList_ID no longer allows nulls
+    }
+
 
     // -------Describe further for Relation (ManyToMany)
 
@@ -148,6 +154,7 @@ class MainClass
         };
         PlayList thePlaylist = new PlayList { Title = "Me Awesome Playlist" };
         thePlaylist.Videos = new List<Video> { };
+        //thePlaylist.Videos = new List<Video> { goodVid }; // for error InnerException Constrains
 
         db.Playlists.Add(thePlaylist);
         db.Videos.Add(goodVid);
@@ -155,7 +162,7 @@ class MainClass
         {
             db.SaveChanges();
         }
-        catch(DbEntityValidationException error)
+        catch(DbEntityValidationException error)    // Inconsistent ERRORs
         {
             foreach(DbEntityValidationResult validationResult in error.EntityValidationErrors)
                 foreach(DbValidationError eRRoRtTwo in validationResult.ValidationErrors)
